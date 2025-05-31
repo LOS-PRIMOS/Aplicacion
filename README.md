@@ -63,6 +63,7 @@ export default function FaceDuelApp() {
           <Button onClick={fakeEvaluate} className="w-full bg-green-600 hover:bg-green-700">
             🤖 Evaluar mi expresión
           </Button>
+          
 
           {result && <p className="text-lg font-bold text-center text-green-700">{result}</p>}
         </CardContent>
