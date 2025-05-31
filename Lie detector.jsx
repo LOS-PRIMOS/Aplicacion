@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"; // O cambia por tu botón si no tienes este componente
 
 function ScanIndicator({ scanning }) {
   return scanning ? (
@@ -25,21 +25,27 @@ function ForceButtons({ setForceResult, forceResult }) {
       <div className="flex justify-center gap-2">
         <Button
           onClick={() => setForceResult("VERDAD")}
-          className={`bg-green-500 hover:bg-green-600 ${forceResult === "VERDAD" ? "ring-2 ring-green-400" : ""}`}
+          className={`bg-green-500 hover:bg-green-600 ${
+            forceResult === "VERDAD" ? "ring-2 ring-green-400" : ""
+          }`}
           aria-pressed={forceResult === "VERDAD"}
         >
           Forzar Verdad
         </Button>
         <Button
           onClick={() => setForceResult("MENTIRA")}
-          className={`bg-red-500 hover:bg-red-600 ${forceResult === "MENTIRA" ? "ring-2 ring-red-400" : ""}`}
+          className={`bg-red-500 hover:bg-red-600 ${
+            forceResult === "MENTIRA" ? "ring-2 ring-red-400" : ""
+          }`}
           aria-pressed={forceResult === "MENTIRA"}
         >
           Forzar Mentira
         </Button>
         <Button
           onClick={() => setForceResult(null)}
-          className={`bg-gray-500 hover:bg-gray-600 ${forceResult === null ? "ring-2 ring-gray-400" : ""}`}
+          className={`bg-gray-500 hover:bg-gray-600 ${
+            forceResult === null ? "ring-2 ring-gray-400" : ""
+          }`}
           aria-pressed={forceResult === null}
         >
           Aleatorio
@@ -55,16 +61,10 @@ export default function LieDetectorApp() {
   const [forceResult, setForceResult] = useState(null);
 
   const startScan = () => {
-    if (scanning) return; // seguridad extra por si acaso
+    if (scanning) return;
     setStatus(null);
     setScanning(true);
 
-    // Si está en modo aleatorio, reseteamos forceResult para que no se quede pillado en uno
-    if (forceResult === null) {
-      // nada, dejamos forceResult como está para usar aleatorio
-    }
-
-    // Vibrar un poco si se puede (modo hype)
     if (navigator.vibrate) navigator.vibrate(200);
 
     setTimeout(() => {
