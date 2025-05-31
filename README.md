@@ -1,73 +1,76 @@
 import React, { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
-export default function FaceDuelApp() {
-  const [expression, setExpression] = useState("");
-  const [userPhoto, setUserPhoto] = useState(null);
-  const [result, setResult] = useState(null);
+export default function LieDetectorApp() {
+  const [status, setStatus] = useState(null);
+  const [scanning, setScanning] = useState(false);
+  const [forceResult, setForceResult] = useState(null);
 
-  const randomExpressions = [
-    "Cara de sorpresa 😲",
-    "Cara de enojo 😡",
-    "Cara de risa 😂",
-    "Cara de miedo 😱",
-    "Cara de asco 🤢",
-    "Cara de enamorado 😍"
-  ];
-
-  const startDuel = () => {
-    const random = randomExpressions[Math.floor(Math.random() * randomExpressions.length)];
-    setExpression(random);
-    setResult(null);
-  };
-
-  const handlePhoto = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setUserPhoto(reader.result);
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const fakeEvaluate = () => {
-    // Aquí normalmente iría la IA de reconocimiento facial
-    const score = Math.floor(Math.random() * 100);
-    setResult(`¡Tu puntuación: ${score}/100! 🎉`);
+  const startScan = () => {
+    setScanning(true);
+    setStatus(null);
+    setTimeout(() => {
+      const result = forceResult || (Math.random() > 0.5 ? "VERDAD" : "MENTIRA");
+      setStatus(result);
+      setScanning(false);
+    }, 3000);
   };
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-4 space-y-6">
-      <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-4xl font-bold">
-        🎭 FaceDuel
+    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-black to-gray-800 text-white p-6 space-y-8">
+      <motion.h1 initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="text-4xl font-bold">
+        🔍 Detector de Mentiras
       </motion.h1>
 
-      <Card className="w-full max-w-md bg-white text-black shadow-2xl rounded-2xl">
-        <CardContent className="p-6 space-y-4">
-          <p className="text-center text-xl font-semibold">{expression || "Presiona para empezar un duelo de cara"}</p>
+      <div className="w-full max-w-sm bg-white text-black rounded-2xl shadow-2xl p-6 text-center">
+        <p className="mb-4 text-lg">Pon el dedo en la pantalla y espera...</p>
 
-          <Button onClick={startDuel} className="w-full bg-indigo-600 hover:bg-indigo-700">
-            🎮 ¡Iniciar Duelo!
-          </Button>
+        <div className="relative w-full h-40 flex items-center justify-center bg-gray-200 rounded-xl">
+          {scanning ? (
+            <motion.div
+              className="w-24 h-24 border-8 border-blue-600 rounded-full animate-spin"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+            />
+          ) : (
+            <div className="text-2xl">👆</div>
+          )}
+        </div>
 
-          <div className="flex flex-col space-y-2">
-            <label htmlFor="upload">Sube tu foto imitando la expresión:</label>
-            <Input type="file" accept="image/*" onChange={handlePhoto} />
-            {userPhoto && <img src={userPhoto} alt="user" className="rounded-xl mt-2" />}
+        <Button
+          onClick={startScan}
+          className="mt-4 w-full bg-red-600 hover:bg-red-700 text-white font-bold text-lg py-2 rounded-xl"
+          disabled={scanning}
+        >
+          {scanning ? "Escaneando..." : "¡Escanear!"}
+        </Button>
+
+        {status && (
+          <motion.p
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className={`mt-6 text-3xl font-extrabold ${status === "VERDAD" ? "text-green-600" : "text-red-600"}`}
+          >
+            {status === "VERDAD" ? "✅ VERDAD" : "❌ MENTIRA"}
+          </motion.p>
+        )}
+
+        <div className="mt-6 space-y-2">
+          <p className="text-sm text-gray-600">Modo broma:</p>
+          <div className="flex justify-center gap-2">
+            <Button onClick={() => setForceResult("VERDAD")} className="bg-green-500 hover:bg-green-600">
+              Forzar Verdad
+            </Button>
+            <Button onClick={() => setForceResult("MENTIRA")} className="bg-red-500 hover:bg-red-600">
+              Forzar Mentira
+            </Button>
+            <Button onClick={() => setForceResult(null)} className="bg-gray-500 hover:bg-gray-600">
+              Aleatorio
+            </Button>
           </div>
-
-          <Button onClick={fakeEvaluate} className="w-full bg-green-600 hover:bg-green-700">
-            🤖 Evaluar mi expresión
-          </Button>
-          
-
-          {result && <p className="text-lg font-bold text-center text-green-700">{result}</p>}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </main>
   );
 }
